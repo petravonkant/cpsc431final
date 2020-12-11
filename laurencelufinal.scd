@@ -80,7 +80,6 @@ s.waitForBoot {
 	// each biome has a short musical fragment or "echo" which has a chance of playing when in the vicinity
 	~p_desert_echo = [64, 65, 61, 58, 60];
 	~d_desert_echo = [0.5, 0.33, 0.33, 0.33, 1];
-	~desert_echo_len = ~d_desert_echo.sum;
 	~dict_desert = Dictionary.newFrom(List[\b1, 58, \c1, 60, \d, 61, \e, 64, \f, 65, \g, 67, \a, 68, \b2f, 70, \b2, 71, \c2, 72]);
 
 	// "The Path of the Wind" from My Neighbor Totoro
@@ -88,36 +87,44 @@ s.waitForBoot {
 	~d_forest = [0.5, 0.5, 1, 0.5, 0.5, 1, 0.5, 0.5, 1, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 0.5, 0.5, 1];
 	~p_forest_echo = [60, 63, 65, 65, 70, 67];
 	~d_forest_echo = [0.5, 0.5, 1, 0.5, 0.5, 1];
-	~forest_echo_len = ~d_forest_echo.sum;
 	~dict_forest = Dictionary.newFrom(List[\c1, 60, \e1, 63, \f, 65, \g, 67, \a, 68, \b, 70, \c2, 72, \d2, 74, \e2, 75]);
 
 	// "The Wings" from Brokeback Mountain
-	~p_mountn = [\b, \c, \d, \f, \e, \c, \c, \b, \b, \c, \b, \a, \c, \c, \c];
+	~p_mountn = [\b, \c, \d, \f, \e, \c, \c, \b, \b, \c, \b, \a, \g, \g, \g];
 	~d_mountn = [1, 1, 1, 3, 2.66, 0.33, 0.33, 2.66, 1, 1, 1, 3, 2.66, 0.33, 3];
 	~p_mountn_echo = [71, 72, 74, 77];
 	~d_mountn_echo = [1, 1, 1, 3];
-	~mountn_echo_len = ~d_mountn_echo.sum;
-	~dict_mountn = Dictionary.newFrom(List[\a, 69, \b, 71, \c, 72, \d, 74, \e, 76, \f, 77]);
+	~dict_mountn = Dictionary.newFrom(List[\g, 67, \a, 69, \b, 71, \c, 72, \d, 74, \e, 76, \f, 77]);
 
 	// Theme from The Eternal Sunshine of the Spotless Mind
 	~p_tundra = [\g, \g, \g, \b, \g, \b, \g, \g, \b, \g, \d1, \e, \f, \g, \g, \g, \b, \g, \b, \g, \b, \c, \d2, \c, \g];
 	~d_tundra = [2.33, 0.33, 0.33, 2.5, 0.5, 2.33, 0.33, 0.33, 2, 1, 1, 1, 1, 2.33, 0.33, 0.33, 2.5, 0.5, 1.5, 0.5, 1, 0.5, 1.5, 1, 3];
 	~p_tundra_echo = [72, 74, 72, 67];
 	~d_tundra_echo = [0.5, 1.5, 1, 3];
-	~tundra_echo_len = ~d_tundra_echo.sum;
 	~dict_tundra = Dictionary.newFrom(List[\d1, 62, \e, 63, \f, 65, \g, 67, \a, 68, \b, 70, \c, 72, \d2, 74]);
 
 	// "One Summer's Day" from Spirited Away
-	~p_plains = [\e, \f, \g, \g, \g, \g, \f, \e, \d1, \d1, \e, \c, \e, \f, \g, \g, \g, \g, \g, \f, \e, \d1, \d1, \e];
+	~p_plains = [\e, \f, \g, \g, \g, \g, \f, \e, \d, \d, \e, \c, \e, \f, \g, \g, \g, \g, \g, \f, \e, \d, \d, \e];
 	~d_plains = [1, 1, 0.5, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 2, 0.25, 0.25, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 2];
 	~p_plains_echo = [72, 72, 74, 72, 71];
 	~d_plains_echo = [0.5, 0.5, 0.5, 0.5, 1];
-	~plains_echo_len = ~d_plains_echo.sum;
-	~dict_plains = Dictionary.newFrom(List[\d1, 62, \e, 64, \f, 65, \g, 67, \b, 71, \c, 72, \d2, 74]);
+	~dict_plains = Dictionary.newFrom(List[\c, 60, \d, 62, \e, 64, \f, 65, \g, 67]);
 
 	// ~pitches and ~duratns are lists of symbols/numbers that make up the training data
-	~pitches = [\a, \af, \b, \b1, \b2, \bf, \b2f, \c, \c1, \c2, \d, \d1, \d2, \e, \e1, \e2, \ef, \f, \g];
+	~pitches = [\a, \b, \b1, \b2, \b2f, \c, \c1, \c2, \d, \d1, \d2, \e, \e1, \e2, \f, \g];
 	~duratns = [0.25, 0.33, 0.5, 1, 1.5, 2, 2.33, 2.5, 2.66, 3];
+
+	// ~make_markov makes an list of list representing the Markov model for the given data
+	// elems is an list of elements (~pitches)
+	// data is the training data (~p_desert)
+	// result is an list of n empty list, where n is the number of elements in elems
+	~make_markov = {arg elems, data, result;
+		elems.do {arg item, i;
+			if (data.includes(item)) {
+				result.put(i, data.wrapAt(data.indicesOfEqual(item) + 1));
+			}
+		}
+	};
 
 	// make the Markov models, one for each aspect of each biome
 	~m_p_desert = Array.fill(~pitches.size, {[]});
@@ -144,18 +151,6 @@ s.waitForBoot {
 	~make_markov.value(~pitches, ~p_plains, ~m_p_plains);
 	~m_d_plains= Array.fill(~duratns.size, {[]});
 	~make_markov.value(~duratns, ~d_plains, ~m_d_plains);
-
-	// ~make_markov makes an list of list representing the Markov model for the given data
-	// elems is an list of elements (~pitches)
-	// data is the training data (~p_desert)
-	// result is an list of n empty list, where n is the number of elements in elems
-	~make_markov = {arg elems, data, result;
-		elems.do {arg item, i;
-			if (data.includes(item)) {
-				result.put(i, data.wrapAt(data.indicesOfEqual(item) + 1));
-			}
-		}
-	};
 
 	// each of ~colors_foo is a list of hex values representing possible colors for that biome
 	// deserts are brown, forests are green, mountains are grey, tundras are blue and plains are golden
@@ -288,34 +283,34 @@ s.waitForBoot {
 			// query the next pitch and duration
 			switch (~biomes[~getIx_x.value, ~getIx_y.value],
 				\d, {
-					~p_next_desert = ~m_p_desert[~pitches.indexOf(~p_next_desert)].choose;
-					~d_next_desert = ~m_d_desert[~duratns.indexOf(~d_next_desert)].choose;
 					Synth(\mdapiano, [\freq, ~dict_desert[~p_next_desert].midicps, \amp, amp]);
 					~d_next_desert.wait;
+					~p_next_desert = ~m_p_desert[~pitches.indexOf(~p_next_desert)].choose;
+					~d_next_desert = ~m_d_desert[~duratns.indexOf(~d_next_desert)].choose;
 				},
 				\f, {
-					~p_next_forest = ~m_p_forest[~pitches.indexOf(~p_next_forest)].choose;
-					~d_next_forest = ~m_d_forest[~duratns.indexOf(~d_next_forest)].choose;
 					Synth(\mdapiano, [\freq, ~dict_forest[~p_next_forest].midicps, \amp, amp]);
 					~d_next_forest.wait;
+					~p_next_forest = ~m_p_forest[~pitches.indexOf(~p_next_forest)].choose;
+					~d_next_forest = ~m_d_forest[~duratns.indexOf(~d_next_forest)].choose;
 				},
 				\m, {
+					Synth(\mdapiano, [\freq, ~dict_mountn[~p_next_mountn].midicps, \amp, amp]);
+					~d_next_mountn.wait;
 					~p_next_mountn = ~m_p_mountn[~pitches.indexOf(~p_next_mountn)].choose;
 					~d_next_mountn = ~m_d_mountn[~duratns.indexOf(~d_next_mountn)].choose;
-					Synth(\mdapiano, [\freq, ~dict_mountn[~p_next_mountn].midicps, \amp, amp]);
-					(~d_next_mountn * 0.75).wait;
 				},
 				\t, {
-					~p_next_tundra = ~m_p_tundra[~pitches.indexOf(~p_next_tundra)].choose;
-					~d_next_tundra = ~m_d_tundra[~duratns.indexOf(~d_next_tundra)].choose;
 					Synth(\mdapiano, [\freq, ~dict_tundra[~p_next_tundra].midicps, \amp, amp]);
 					~d_next_tundra.wait;
+					~p_next_tundra = ~m_p_tundra[~pitches.indexOf(~p_next_tundra)].choose;
+					~d_next_tundra = ~m_d_tundra[~duratns.indexOf(~d_next_tundra)].choose;
 				},
 				\p, {
-					~p_next_plains = ~m_p_plains[~pitches.indexOf(~p_next_plains)].choose;
-					~d_next_plains = ~m_d_plains[~duratns.indexOf(~d_next_plains)].choose;
 					Synth(\mdapiano, [\freq, ~dict_plains[~p_next_plains].midicps, \amp, amp]);
 					~d_next_plains.wait;
+					~p_next_plains = ~m_p_plains[~pitches.indexOf(~p_next_plains)].choose;
+					~d_next_plains = ~m_d_plains[~duratns.indexOf(~d_next_plains)].choose;
 				}
 			);
 		};
@@ -335,13 +330,6 @@ s.waitForBoot {
 		\m, ~d_mountn_echo,
 		\t, ~d_tundra_echo,
 		\p, ~d_plains_echo
-	]);
-	~dict_echo_len = Dictionary.newFrom([
-		\d, ~d_desert_echo.sum,
-		\f, ~d_forest_echo.sum,
-		\m, ~d_mountn_echo.sum,
-		\t, ~d_tundra_echo.sum,
-		\p, ~d_plains_echo.sum
 	]);
 
 	// a routine to play echoes of nearby biomes
